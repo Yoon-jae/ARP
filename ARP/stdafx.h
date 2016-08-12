@@ -77,6 +77,14 @@ using namespace std;
 												          TCP_HEADER_SIZE +		\
 												          IP_HEADER_SIZE ) )
 
+#define ARP_HARDTYPE			0x0001	// Ethernet frame
+#define ARP_PROTOTYPE_IP		0x0800
+#define ARP_PROTOTYPE_ARP		0x0806
+#define ARP_PROTOTYPE_RARP		0x0835
+#define ARP_OPCODE_REQUEST		0x0001
+#define ARP_OPCODE_REPLY		0x0002
+#define ARP_HEADER_SIZE			28
+
 #define NI_COUNT_NIC	10
 
 typedef struct _ETHERNET_ADDR
