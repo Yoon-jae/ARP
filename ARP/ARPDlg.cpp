@@ -283,7 +283,6 @@ void CARPDlg::OnBnClickedMydevSelect()
 
 	m_NI->PacketStartDriver();
 
-
 	// Dialog 상태 변경
 	SetDlgState(ARP_OPERATING);
 

@@ -141,7 +141,6 @@ BOOL CNILayer::Receive( unsigned char* ppayload )
 
 UINT CNILayer::ReadingThread(LPVOID pParam)
 {
-	//////////////////////// fill the blank ///////////////////////////////
 	struct pcap_pkthdr *header;
 	const u_char *pkt_data;
 	int result;
@@ -160,5 +159,4 @@ UINT CNILayer::ReadingThread(LPVOID pParam)
 	}
 
 	return 0;
-	///////////////////////////////////////////////////////////////////////
 }

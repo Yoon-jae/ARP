@@ -52,30 +52,20 @@ void CTCPLayer::SetDestinPort(unsigned int dst_port)
 
 BOOL CTCPLayer::Send(unsigned char* ppayload, int nlength)
 {
-	/*
 	memcpy( m_sHeader.tcp_data, ppayload, nlength ) ;
 	
 	BOOL bSuccess = FALSE ;
 	bSuccess = mp_UnderLayer->Send((unsigned char*)&m_sHeader,nlength+TCP_HEADER_SIZE);	
-	*/
- 	return true;
+	
+ 	return bSuccess;
 }
 
 BOOL CTCPLayer::Receive(unsigned char* ppayload)
 {
-	/*
 	PTCPLayer_HEADER pFrame = (PTCPLayer_HEADER) ppayload ;
 	
 	BOOL bSuccess = FALSE;
+	bSuccess = mp_aUpperLayer[0]->Receive((unsigned char*)pFrame->tcp_data);
 
- 	//////////////////////// fill the blank ///////////////////////////////
-	if(pFrame->tcp_dport == TCP_PORT_CHAT) {
-		bSuccess = mp_aUpperLayer[1]->Receive((unsigned char*)pFrame->tcp_data);
-	} else if(pFrame->tcp_dport == TCP_PORT_FILE) {
-		bSuccess = mp_aUpperLayer[0]->Receive((unsigned char*)pFrame->tcp_data);
-	}
-	///////////////////////////////////////////////////////////////////////
-	*/
-
-	return true ;
+	return bSuccess ;
 }
