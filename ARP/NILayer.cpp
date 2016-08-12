@@ -34,12 +34,13 @@ void CNILayer::PacketStartDriver()
 	char errbuf[PCAP_ERRBUF_SIZE];
 
 	if(m_iNumAdapter == -1){
-		AfxMessageBox(L"Not exist NICard");
+		AfxMessageBox("Not exist NICard");
 		return;
 	}
 	
 	m_AdapterObject = pcap_open_live(m_pAdapterList[m_iNumAdapter]->name,1500,PCAP_OPENFLAG_PROMISCUOUS,2000,errbuf);
 	if(!m_AdapterObject){
+		AfxMessageBox(errbuf);
 		return;
 	}
 	AfxBeginThread(ReadingThread, this);
@@ -70,12 +71,12 @@ void CNILayer::SetAdapterList(LPADAPTER *plist)
 
 	if(pcap_findalldevs(&alldevs, errbuf) == -1)
 	{
-		AfxMessageBox(L"Not exist NICard");
+		AfxMessageBox("Not exist NICard");
 		return;
 	}
 	if(!alldevs)
 	{
-		AfxMessageBox(L"Not exist NICard");
+		AfxMessageBox("Not exist NICard");
 		return;
 	}
 
@@ -85,11 +86,46 @@ void CNILayer::SetAdapterList(LPADAPTER *plist)
 	}
 }
 
+CString CNILayer::GetNICardAddress(char* adapter_name)
+{
+	PPACKET_OID_DATA OidData;
+	LPADAPTER lpAdapter;
+
+	OidData = (PPACKET_OID_DATA)malloc(6+sizeof(PACKET_OID_DATA));
+	if(OidData == NULL)
+	{
+		return "None";
+	}
+
+	OidData->Oid = OID_802_3_CURRENT_ADDRESS;
+	OidData->Length = 6;
+	ZeroMemory(OidData->Data, 6);
+
+	lpAdapter = PacketOpenAdapter(adapter_name);
+
+	CString NICardAddress;
+	
+	if(PacketRequest(lpAdapter, FALSE, OidData))
+	{
+		NICardAddress.Format("%.2x:%.2x:%.2x:%.2x:%.2x:%.2x", 
+			(OidData->Data)[0],
+			(OidData->Data)[1],
+			(OidData->Data)[2],
+			(OidData->Data)[3],
+			(OidData->Data)[4],
+			(OidData->Data)[5]);
+	}
+
+	PacketCloseAdapter(lpAdapter);
+	free(OidData);
+	return NICardAddress;
+}
+
 BOOL CNILayer::Send(unsigned char *ppayload, int nlength)
 {
 	if(pcap_sendpacket(m_AdapterObject,ppayload,nlength))
 	{
-		AfxMessageBox(L"패킷 전송 실패");
+		AfxMessageBox("패킷 전송 실패");
 		return FALSE;
 	}
 	return TRUE;
@@ -110,7 +146,6 @@ UINT CNILayer::ReadingThread(LPVOID pParam)
 	const u_char *pkt_data;
 	int result;
 
-	AfxBeginThread(FileTransferThread, (LPVOID)pParam);
 	CNILayer *pNI = (CNILayer *)pParam;
 
 	while(pNI->m_thrdSwitch) {
@@ -126,11 +161,4 @@ UINT CNILayer::ReadingThread(LPVOID pParam)
 
 	return 0;
 	///////////////////////////////////////////////////////////////////////
-}
-
-UINT CNILayer::FileTransferThread(LPVOID pParam)
-{
-	CNILayer *pNI = (CNILayer *)pParam;
-
-	return 0;
 }

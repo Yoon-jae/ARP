@@ -77,6 +77,23 @@ CARPDlg::CARPDlg(CWnd* pParent /*=NULL*/)
 void CARPDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+
+	// Control과 변수를 이어주는 작업
+	
+	// My Device
+	DDX_Control(pDX, IDC_MYDEV_LIST, mCombo_MyDev);
+	DDX_Text(pDX, IDC_MYDEV_ETHERNET, mEdit_MyEther);
+	DDX_Control(pDX, IDC_MYDEV_IP, mIP_MyIP);
+
+	// ARP Cache Table
+	DDX_Control(pDX, IDC_ARP_CACHE_TABLE, mList_ARPCacheTable);
+	DDX_Control(pDX, IDC_ARP_DSTIP, mIP_ARPDSTIP);
+
+	// Proxy ARP Entry
+	DDX_Control(pDX, IDC_PARP_ENTRY, mList_PARPEntry);
+
+	// Gratuituos ARP
+	DDX_Text(pDX, IDC_GARP_ETHERNET, mEdit_GARPEther);
 }
 
 BEGIN_MESSAGE_MAP(CARPDlg, CDialogEx)
@@ -118,6 +135,8 @@ BOOL CARPDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	SetDlgState(ARP_INITIALIZING);
+	SetDlgState(ARP_DEVICE);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -208,6 +227,18 @@ void CARPDlg::SetDlgState(int state)
 		break;
 
 	case ARP_DEVICE:
+		for(int i=0; i<NI_COUNT_NIC; i++) {
+			if(!m_NI->GetAdapterObject(i))
+				break;
+			device_description = m_NI->GetAdapterObject(i)->description;
+			device_description.Trim();
+			pMYDEV_EtherComboBox->AddString(device_description);
+		}
+
+		pMYDEV_EtherComboBox->SetCurSel(0);
+		CString macAddr = m_NI->GetAdapterObject(0)->name;
+
+		mEdit_MyEther = m_NI->GetNICardAddress((char *)macAddr.GetString());
 		break;
 	}
 }

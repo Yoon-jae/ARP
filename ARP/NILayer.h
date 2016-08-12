@@ -28,9 +28,9 @@ public:
 	pcap_if_t 		*GetAdapterObject(int iIndex);
 	void			SetAdapterNumber(int iNum);
 	void			SetAdapterList(LPADAPTER *plist);
+	CString			GetNICardAddress(char* adapter_name);
 
 	static UINT		ReadingThread(LPVOID pParam);
-	static UINT		FileTransferThread(LPVOID pParam);
 
 	BOOL			Receive( unsigned char *ppayload ) ;
 	BOOL			Send( unsigned char *ppayload, int nlength );
