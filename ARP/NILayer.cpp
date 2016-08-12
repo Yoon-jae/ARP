@@ -34,13 +34,12 @@ void CNILayer::PacketStartDriver()
 	char errbuf[PCAP_ERRBUF_SIZE];
 
 	if(m_iNumAdapter == -1){
-		AfxMessageBox("Not exist NICard");
+		AfxMessageBox(L"Not exist NICard");
 		return;
 	}
 	
 	m_AdapterObject = pcap_open_live(m_pAdapterList[m_iNumAdapter]->name,1500,PCAP_OPENFLAG_PROMISCUOUS,2000,errbuf);
 	if(!m_AdapterObject){
-		AfxMessageBox(errbuf);
 		return;
 	}
 	AfxBeginThread(ReadingThread, this);
@@ -71,12 +70,12 @@ void CNILayer::SetAdapterList(LPADAPTER *plist)
 
 	if(pcap_findalldevs(&alldevs, errbuf) == -1)
 	{
-		AfxMessageBox("Not exist NICard");
+		AfxMessageBox(L"Not exist NICard");
 		return;
 	}
 	if(!alldevs)
 	{
-		AfxMessageBox("Not exist NICard");
+		AfxMessageBox(L"Not exist NICard");
 		return;
 	}
 
@@ -90,7 +89,7 @@ BOOL CNILayer::Send(unsigned char *ppayload, int nlength)
 {
 	if(pcap_sendpacket(m_AdapterObject,ppayload,nlength))
 	{
-		AfxMessageBox("패킷 전송 실패");
+		AfxMessageBox(L"패킷 전송 실패");
 		return FALSE;
 	}
 	return TRUE;

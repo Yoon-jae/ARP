@@ -30,8 +30,8 @@ public:
 		unsigned int arp_srcProtocolAddress;
 		unsigned int arp_dstHardAddress;
 		unsigned int arp_dstHardProtocolAddress;
-	} ARPLayer_HEADER, *PARPayer_HEADER;
+	} ARPLayer_HEADER, *PARPLayer_HEADER;
 
 protected:
 	ARPLayer_HEADER m_sHeader;
-}
+};

@@ -45,7 +45,9 @@ CBaseLayer* CLayerManager::GetLayer(char *pName)
 	for ( int i = 0 ; i < m_nLayerCount ; i++ )
 	{
 		CString stName( pName ) ;
-		if ( !stName.Compare( mp_aLayers[i]->GetLayerName( ) ) )
+		CString cmpStr(mp_aLayers[i]->GetLayerName());
+		/* cmpStr = mp_aLayers[i]->GetLayerName()*/
+		if ( !stName.Compare( cmpStr ) )
 			return mp_aLayers[i] ;
 	}
 

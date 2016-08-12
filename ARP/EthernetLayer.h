@@ -12,12 +12,15 @@
 #include "BaseLayer.h"
 
 class CEthernetLayer 
-: public CBaseLayer  
+: public CBaseLayer
 {
 private:
 	inline void		ResetHeader( );
 
 public:
+	CEthernetLayer( char* pName );
+	virtual ~CEthernetLayer();
+
 	unsigned short	tcp_port;
 	void			StartThread();
 
@@ -29,8 +32,7 @@ public:
 	unsigned char*	GetEnetDstAddress( );
 	unsigned char*	GetEnetSrcAddress( );
 
-	CEthernetLayer( char* pName );
-	virtual ~CEthernetLayer();
+	
 
 	typedef struct _ETHERNET_ADDR
 	{

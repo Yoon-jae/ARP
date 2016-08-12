@@ -174,7 +174,6 @@ HCURSOR CARPDlg::OnQueryDragIcon()
 void CARPDlg::SetDlgState(int state)
 {
 	UpdateData( TRUE ) ;
-	int i;
 
 	CString		device_description;
 
