@@ -33,6 +33,8 @@ void CARPLayer::ResetHeader()
 
 BOOL CARPLayer::Send(unsigned char* ppayload, int nlength)
 {
+
+
 	return true;
 }
 

@@ -87,6 +87,7 @@ private:
 public:
 	afx_msg void OnBnClickedMydevSelect();
 	afx_msg void OnBnClickedArpRequest();
+	afx_msg void OnCbnSelchangeMydevList();
 };
 
 #endif // !defined(AFX_ARPDLG_H__FE9C37CB_4C90_4772_99AD_50A9B24BCE62__INCLUDED_)

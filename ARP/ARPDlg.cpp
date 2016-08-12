@@ -102,6 +102,7 @@ BEGIN_MESSAGE_MAP(CARPDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_MYDEV_SELECT, &CARPDlg::OnBnClickedMydevSelect)
 	ON_BN_CLICKED(IDC_ARP_REQUEST, &CARPDlg::OnBnClickedArpRequest)
+	ON_CBN_SELCHANGE(IDC_MYDEV_LIST, &CARPDlg::OnCbnSelchangeMydevList)
 END_MESSAGE_MAP()
 
 
@@ -334,4 +335,22 @@ void CARPDlg::OnBnClickedArpRequest()
 	
 
 	UpdateData(FALSE);
+}
+
+
+void CARPDlg::OnCbnSelchangeMydevList()
+{
+	UpdateData ( TRUE );
+
+	// 찾은 Device List를 ComboBox에 저장
+	CComboBox*	pMY_EtherComboBox = (CComboBox*)GetDlgItem(IDC_MYDEV_LIST);
+	
+	// ComboBox에서 선택된 Item으로 NIC의 Adapter 이름을 가져옴
+	int sIndex = pMY_EtherComboBox->GetCurSel();
+	CString nicName = m_NI->GetAdapterObject(sIndex)->name;
+	
+	// Adapter 이름으로 Mac Address를 가져옴
+	mEdit_MyEther = m_NI->GetNICardAddress((char *)nicName.GetString());
+
+	UpdateData ( FALSE );
 }
