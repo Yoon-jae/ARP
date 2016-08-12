@@ -72,6 +72,7 @@ private:
 
 	void			SetDlgState( int state );
 	inline void		EndofProcess( );
+	unsigned char* CARPDlg::MacAddrToHexInt(CString ether);
 
 // Object Layer
 	CARPLayer*			m_ARP;
@@ -83,6 +84,8 @@ private:
 // Implementation
 	UINT			m_wParam;
 	DWORD			m_lParam;
+public:
+	afx_msg void OnBnClickedMydevSelect();
 };
 
 #endif // !defined(AFX_ARPDLG_H__FE9C37CB_4C90_4772_99AD_50A9B24BCE62__INCLUDED_)

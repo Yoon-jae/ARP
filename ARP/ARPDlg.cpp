@@ -100,6 +100,7 @@ BEGIN_MESSAGE_MAP(CARPDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_MYDEV_SELECT, &CARPDlg::OnBnClickedMydevSelect)
 END_MESSAGE_MAP()
 
 
@@ -205,7 +206,7 @@ void CARPDlg::SetDlgState(int state)
 	CButton*	pPARP_AddButton = (CButton*) GetDlgItem(IDC_PARP_ADD);
 	CButton*	pPARP_DeleteButton = (CButton*) GetDlgItem(IDC_PARP_DELETE);
 
-	CButton*	pGARP_AddButton = (CButton*) GetDlgItem(IDC_GARP_REQUEST);
+	CButton*	pGARP_RequestButton = (CButton*) GetDlgItem(IDC_GARP_REQUEST);
 
 	CEdit*		pGARP_EtherEdit = (CEdit*) GetDlgItem(IDC_GARP_ETHERNET);
 	CEdit*		pMYDEV_EtherEdit = (CEdit*) GetDlgItem(IDC_MYDEV_ETHERNET);
@@ -218,9 +219,29 @@ void CARPDlg::SetDlgState(int state)
 	switch(state)
 	{
 	case ARP_INITIALIZING:
+		pARP_ItemDeleteButton->EnableWindow(FALSE);
+		pARP_AllDeleteButton->EnableWindow(FALSE);
+		pARP_RequestButton->EnableWindow(FALSE);
+		pPARP_AddButton->EnableWindow(FALSE);
+		pPARP_DeleteButton->EnableWindow(FALSE);
+		pGARP_RequestButton->EnableWindow(FALSE);
 		break;
 
 	case ARP_OPERATING:
+		pARP_ItemDeleteButton->EnableWindow(TRUE);
+		pARP_AllDeleteButton->EnableWindow(TRUE);
+		pARP_RequestButton->EnableWindow(TRUE);
+		pPARP_AddButton->EnableWindow(TRUE);
+		pPARP_DeleteButton->EnableWindow(TRUE);
+		pGARP_RequestButton->EnableWindow(TRUE);
+
+		pGARP_EtherEdit->EnableWindow(TRUE);
+		pARP_IPAddrCtrl->EnableWindow(TRUE);
+
+		pMYDEV_EtherComboBox->EnableWindow(FALSE);
+		pMYDEV_IPAddrCtrl->EnableWindow(FALSE);
+		pMYDEV_SelectButton->EnableWindow(FALSE);
+
 		break;
 
 	case ARP_ENDPROCESSING:
@@ -241,4 +262,46 @@ void CARPDlg::SetDlgState(int state)
 		mEdit_MyEther = m_NI->GetNICardAddress((char *)macAddr.GetString());
 		break;
 	}
+}
+
+/* My Device Select 버튼 클릭시 */
+void CARPDlg::OnBnClickedMydevSelect()
+{
+	UpdateData(TRUE);
+
+	// 입력된 IP 주소를 저장
+	unsigned char mydev_ip[4];
+	mIP_MyIP.GetAddress(mydev_ip[0],mydev_ip[1],mydev_ip[2],mydev_ip[3]);
+
+	// 설정된 IP, MAC(16진수로 변환하여) 주소를 ARP Header에 설정.
+	m_ARP->SetEnetSrcAddress(MacAddrToHexInt(mEdit_MyEther));
+	m_ARP->SetSrcIPAddress(mydev_ip);
+
+	// 선택한 NICard로 Adapter 등록
+	int nIndex = mCombo_MyDev.GetCurSel();
+	m_NI->SetAdapterNumber(nIndex);
+
+	m_NI->PacketStartDriver();
+
+
+	// Dialog 상태 변경
+	SetDlgState(ARP_OPERATING);
+
+	UpdateData(FALSE);
+}
+
+unsigned char* CARPDlg::MacAddrToHexInt(CString ether)
+{
+	CString noColStr;
+	unsigned char *arp_ether = (u_char *)malloc(sizeof(u_char)*6);
+
+	for(int i=0; i<6; i++) {
+		// ":"으로 구분되어진 MAC 주소를 Substring하여, 1Byte씩 배열에 넣어 줌
+		AfxExtractSubString(noColStr,ether,i,':');
+		// 받아온 MAC 주소를 16진수로 변환시켜줌
+		arp_ether[i] = (unsigned char)strtoul(noColStr.GetString(),NULL,16);
+	}
+	arp_ether[6] = '\0';
+
+	return arp_ether;
 }
