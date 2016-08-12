@@ -23,12 +23,12 @@ void CARPLayer::ResetHeader()
 
 }
 
-BOOL Send(unsigned char* ppayload, int nlength)
+BOOL CARPLayer::Send(unsigned char* ppayload, int nlength)
 {
 	return true;
 }
 
-BOOL Receive(unsigned char* ppayload)
+BOOL CARPLayer::Receive(unsigned char* ppayload)
 {
 	return false;
 }
