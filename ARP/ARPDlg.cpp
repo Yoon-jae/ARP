@@ -101,6 +101,7 @@ BEGIN_MESSAGE_MAP(CARPDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_MYDEV_SELECT, &CARPDlg::OnBnClickedMydevSelect)
+	ON_BN_CLICKED(IDC_ARP_REQUEST, &CARPDlg::OnBnClickedArpRequest)
 END_MESSAGE_MAP()
 
 
@@ -303,4 +304,34 @@ unsigned char* CARPDlg::MacAddrToHexInt(CString ether)
 	arp_ether[6] = '\0';
 
 	return arp_ether;
+}
+
+/* ARP Request 버튼 클릭시 */
+void CARPDlg::OnBnClickedArpRequest()
+{
+	UpdateData(TRUE);
+
+	// 입력된 목적지 주소를 IP Header에 저장
+	unsigned char dst_ip[4];
+	mIP_ARPDSTIP.GetAddress(dst_ip[0], dst_ip[1],dst_ip[2],dst_ip[3]);
+	m_IP->SetDstIPAddress(dst_ip);
+
+	// UnderLayer Send
+	BOOL bSuccess = FALSE ;
+	bSuccess = mp_UnderLayer->Send(0,1);
+
+
+	// Dialog cache table update
+	if(bSuccess) {
+
+	} else {
+
+	}
+
+
+	// Change dialog setting 
+
+	
+
+	UpdateData(FALSE);
 }

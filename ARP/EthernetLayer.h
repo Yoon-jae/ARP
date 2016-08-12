@@ -32,26 +32,6 @@ public:
 	unsigned char*	GetEnetDstAddress( );
 	unsigned char*	GetEnetSrcAddress( );
 
-	
-
-	typedef struct _ETHERNET_ADDR
-	{
-		union {
-			struct { unsigned char e0, e1, e2, e3, e4, e5; } s_un_byte ;
-			unsigned char s_ether_addr[6] ;
-		} S_un ;
-
-	#define addr0 S_un.s_un_byte.e0
-	#define addr1 S_un.s_un_byte.e1
-	#define addr2 S_un.s_un_byte.e2
-	#define addr3 S_un.s_un_byte.e3
-	#define addr4 S_un.s_un_byte.e4
-	#define addr5 S_un.s_un_byte.e5
-
-	#define addrs  S_un.s_ether_addr
-
-	} ETHERNET_ADDR, *LPETHERNET_ADDR ;
-
 	typedef struct _ETHERNET_HEADER {
 
 		ETHERNET_ADDR	enet_dstaddr;		// destination address of ethernet layer
