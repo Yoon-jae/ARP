@@ -39,10 +39,10 @@ public:
 		unsigned char arp_hardLength;
 		unsigned char arp_protocolLength;
 		unsigned short arp_option;
-		ETHERNET_ADDR arp_srcHardAddress;
-		IP_ADDR arp_srcProtocolAddress;
-		ETHERNET_ADDR arp_dstHardAddress;
-		IP_ADDR arp_dstProtocolAddress;
+		ETHERNET_ADDR arp_srcEtherAddress;
+		IP_ADDR arp_srcIPAddress;
+		ETHERNET_ADDR arp_dstEtherAddress;
+		IP_ADDR arp_dstIPAddress;
 	} ARPLayer_HEADER, *PARPLayer_HEADER;
 
 protected:

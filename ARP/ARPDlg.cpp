@@ -61,15 +61,16 @@ CARPDlg::CARPDlg(CWnd* pParent /*=NULL*/)
 	m_LayerMgr.AddLayer(new CTCPLayer("TCP"));
 	m_LayerMgr.AddLayer(new CIPLayer("IP"));
 	m_LayerMgr.AddLayer(new CARPLayer("ARP"));
-	m_LayerMgr.AddLayer(new CEthernetLayer("ETHER"));
+	m_LayerMgr.AddLayer(new CEthernetLayer("Ethernet"));
 	m_LayerMgr.AddLayer(new CNILayer("NI"));
 
-	m_LayerMgr.ConnectLayers("NI ( *Ethernet ( *ARP ( +IP ( *TCP ( *ARPDlg ) ) ) -IP ) )"); 
+	// m_LayerMgr.ConnectLayers("NI ( *Ethernet ( *ARP ( +IP ( *TCP ( *ARPDlg ) ) ) -IP ) )"); 
+	m_LayerMgr.ConnectLayers("NI ( *Ethernet ( *ARP ( +IP ( *TCP ( *ARPDlg ) ) ) -IP ( *TCP ( *ARPDlg ) ) ) )");
 
 	m_TCP = (CTCPLayer *)m_LayerMgr.GetLayer("TCP");
 	m_IP = (CIPLayer *)m_LayerMgr.GetLayer("IP");
 	m_ARP = (CARPLayer *)m_LayerMgr.GetLayer("ARP");
-	m_Ether = (CEthernetLayer *)m_LayerMgr.GetLayer("ETHER");
+	m_Ether = (CEthernetLayer *)m_LayerMgr.GetLayer("Ethernet");
 	m_NI = (CNILayer *)m_LayerMgr.GetLayer("NI");
 	
 }
@@ -140,6 +141,18 @@ BOOL CARPDlg::OnInitDialog()
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	SetDlgState(ARP_INITIALIZING);
 	SetDlgState(ARP_DEVICE);
+	
+	// List Control에 3가지 Column 추가
+	// Arp Cache Table
+	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(0,"IP Address",LVCFMT_LEFT,180);
+	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(1,"Ethernet Address",LVCFMT_LEFT,180);
+	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(2,"Status",LVCFMT_LEFT,130);
+
+	// Proxy Cache Table
+	((CListCtrl*)GetDlgItem(IDC_PARP_ENTRY))->InsertColumn(0,"Device",LVCFMT_LEFT,180);
+	((CListCtrl*)GetDlgItem(IDC_PARP_ENTRY))->InsertColumn(1,"IP Address",LVCFMT_LEFT,180);
+	((CListCtrl*)GetDlgItem(IDC_PARP_ENTRY))->InsertColumn(2,"Ethernet Address",LVCFMT_LEFT,180);
+
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -276,8 +289,10 @@ void CARPDlg::OnBnClickedMydevSelect()
 	mIP_MyIP.GetAddress(mydev_ip[0],mydev_ip[1],mydev_ip[2],mydev_ip[3]);
 
 	// 설정된 IP, MAC(16진수로 변환하여) 주소를 ARP Header에 설정.
-	m_ARP->SetEnetSrcAddress(MacAddrToHexInt(mEdit_MyEther));
-	m_ARP->SetSrcIPAddress(mydev_ip);
+	m_IP->SetSrcIPAddress(mydev_ip);
+	m_ARP->SetEnetDstAddress(MacAddrToHexInt(mEdit_MyEther));
+	m_Ether->SetEnetSrcAddress(MacAddrToHexInt(mEdit_MyEther));
+
 
 	// 선택한 NICard로 Adapter 등록
 	int nIndex = mCombo_MyDev.GetCurSel();
@@ -319,7 +334,9 @@ void CARPDlg::OnBnClickedArpRequest()
 
 	// UnderLayer Send
 	BOOL bSuccess = FALSE ;
-	bSuccess = mp_UnderLayer->Send(0,1);
+
+	unsigned char a = '0';
+	bSuccess = mp_UnderLayer->Send(&a,1);
 
 
 	// Dialog cache table update
