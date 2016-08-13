@@ -42,7 +42,7 @@ BOOL CARPLayer::Send(unsigned char* ppayload, int nlength)
     dstAddress[4] = 0x00;
     dstAddress[5] = 0x01;
    
-	((CEthernetLayer *)mp_aUpperLayer)->SetEnetDstAddress(dstAddress);
+	((CEthernetLayer *)mp_UnderLayer)->SetEnetDstAddress(dstAddress);
 
     BOOL bSuccess = FALSE;
     bSuccess = mp_UnderLayer->Send((unsigned char*) ppayload, nlength);
