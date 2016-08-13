@@ -65,7 +65,6 @@ CARPDlg::CARPDlg(CWnd* pParent /*=NULL*/)
 	m_LayerMgr.AddLayer(new CNILayer("NI"));
 
 	// m_LayerMgr.ConnectLayers("NI ( *Ethernet ( *ARP ( +IP ( *TCP ( *ARPDlg ) ) ) -IP ) )"); 
-	//m_LayerMgr.ConnectLayers("NI ( *Ethernet ( *ARP ( +IP ( *TCP ( *ARPDlg ) ) ) -IP ( *TCP ( *ARPDlg ) ) ) )");
 
 	m_TCP = (CTCPLayer *)m_LayerMgr.GetLayer("TCP");
 	m_IP = (CIPLayer *)m_LayerMgr.GetLayer("IP");
@@ -74,21 +73,17 @@ CARPDlg::CARPDlg(CWnd* pParent /*=NULL*/)
 	m_NI = (CNILayer *)m_LayerMgr.GetLayer("NI");
 
 	this->SetUnderLayer(m_TCP);
-	m_TCP->SetUpperLayer(this);
-	
+
 	m_TCP->SetUnderLayer(m_IP);
-	m_IP->SetUpperLayer(m_TCP);
-	
 	m_IP->SetUnderLayer(m_ARP);
-	m_ARP->SetUpperLayer(m_IP);
-	
 	m_ARP->SetUnderLayer(m_Ether);
+	m_Ether->SetUnderLayer(m_NI);
+
+	m_NI->SetUpperLayer(m_Ether);
 	m_Ether->SetUpperLayer(m_IP);
 	m_Ether->SetUpperLayer(m_ARP);
-
-	m_Ether->SetUnderLayer(m_NI);
-	m_NI->SetUpperLayer(m_Ether);
-
+	m_IP->SetUpperLayer(m_TCP);
+	m_TCP->SetUpperLayer(this);
 }
 
 void CARPDlg::DoDataExchange(CDataExchange* pDX)
