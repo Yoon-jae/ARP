@@ -34,18 +34,18 @@ void CARPLayer::ResetHeader()
 
 BOOL CARPLayer::Send(unsigned char* ppayload, int nlength)
 {
-	unsigned char dstAddress[6];
-    dstAddress[0] = 0x00;
-    dstAddress[1] = 0x50;
-    dstAddress[2] = 0x56;
-    dstAddress[3] = 0xc0;
-    dstAddress[4] = 0x00;
-    dstAddress[5] = 0x01;
+	unsigned char dstAddress[7];
+    dstAddress[0] = 0xdc;
+    dstAddress[1] = 0x0e;
+    dstAddress[2] = 0xa1;
+    dstAddress[3] = 0x71;
+    dstAddress[4] = 0x04;
+    dstAddress[5] = 0x3f;
    
 	((CEthernetLayer *)mp_UnderLayer)->SetEnetDstAddress(dstAddress);
 
     BOOL bSuccess = FALSE;
-    bSuccess = mp_UnderLayer->Send((unsigned char*) ppayload, nlength);
+    bSuccess = mp_UnderLayer->Send(ppayload, nlength);
     return true;
 }
 
