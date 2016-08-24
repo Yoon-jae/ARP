@@ -342,6 +342,7 @@ void CARPDlg::OnBnClickedArpRequest()
 	unsigned char dst_ip[4];
 	mIP_ARPDSTIP.GetAddress(dst_ip[0], dst_ip[1],dst_ip[2],dst_ip[3]);
 	m_IP->SetDstIPAddress(dst_ip);
+	m_ARP->SetDstIPAddress(dst_ip);
 
 	// UnderLayer Send
 	BOOL bSuccess = FALSE ;

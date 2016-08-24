@@ -3,6 +3,8 @@
 #endif // _MSC_VER > 1000
 
 #include "BaseLayer.h"
+#include <vector>
+#include <algorithm>
 
 class CARPLayer
 	: public CBaseLayer
@@ -47,4 +49,5 @@ public:
 
 protected:
 	ARPLayer_HEADER m_sHeader;
+	vector<pair<ETHERNET_ADDR, IP_ADDR> > arp_table;
 };

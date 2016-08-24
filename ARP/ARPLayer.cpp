@@ -13,6 +13,7 @@ CARPLayer::CARPLayer( char* pName)
 : CBaseLayer( pName )
 {
 	ResetHeader();
+	arp_table.clear();
 }
 
 CARPLayer::~CARPLayer()
@@ -41,11 +42,23 @@ BOOL CARPLayer::Send(unsigned char* ppayload, int nlength)
     dstAddress[3] = 0x71;
     dstAddress[4] = 0x04;
     dstAddress[5] = 0x3f;
-   
-	((CEthernetLayer *)mp_UnderLayer)->SetEnetDstAddress(dstAddress);
 
-    BOOL bSuccess = FALSE;
-    bSuccess = mp_UnderLayer->Send(ppayload, nlength);
+	bool found = false;
+	for(int i=0; i<arp_table.size(); i++) {
+		if(arp_table[i].second.addrs == GetDstIPAddress()) {
+			SetEnetDstAddress(arp_table[i].first.addrs);
+			found = true;
+			break;
+		}
+	}
+	BOOL bSuccess = FALSE;
+	
+	if(!found) { // Send ARP Request
+
+	} else {
+		((CEthernetLayer *)mp_UnderLayer)->SetEnetDstAddress(dstAddress);
+	    bSuccess = mp_UnderLayer->Send(ppayload, nlength);
+	}
     return true;
 }
 
