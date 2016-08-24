@@ -87,6 +87,7 @@ using namespace std;
 
 #define NI_COUNT_NIC	10
 
+
 typedef struct _ETHERNET_ADDR
 {
 	union {

@@ -3,8 +3,9 @@
 #endif // _MSC_VER > 1000
 
 #include "BaseLayer.h"
-#include <vector>
 #include <algorithm>
+#include <vector>
+#include <tuple>
 
 class CARPLayer
 	: public CBaseLayer
@@ -49,5 +50,7 @@ public:
 
 protected:
 	ARPLayer_HEADER m_sHeader;
-	vector<pair<ETHERNET_ADDR, IP_ADDR> > arp_table;
+	// ARP Header, IP Header, timer, complete/incomplete
+	vector<tuple<unsigned char*, unsigned char*, int, BOOL> > arp_table;
+	pair<unsigned char*, int> tempPayload;
 };

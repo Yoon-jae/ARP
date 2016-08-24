@@ -71,11 +71,18 @@ BOOL CEthernetLayer::Receive( unsigned char* ppayload )
 
 	BOOL bSuccess = FALSE ;
 
-	if((memcmp((char *)pFrame->enet_dstaddr.S_un.s_ether_addr,(char *)m_sHeader.enet_srcaddr.S_un.s_ether_addr,6)==0 &&
-		memcmp((char *)pFrame->enet_srcaddr.S_un.s_ether_addr,(char *)m_sHeader.enet_srcaddr.S_un.s_ether_addr,6)!=0))
+	// Broadcast ÁÖ¼Ò (FF:FF:FF:FF:FF:FF)
+	unsigned char broadcast[6];
+	memset(broadcast,0xff,6);
+
+	if(((memcmp((char *)pFrame->enet_dstaddr.S_un.s_ether_addr,(char *)m_sHeader.enet_srcaddr.S_un.s_ether_addr,6)==0 &&
+		memcmp((char *)pFrame->enet_srcaddr.S_un.s_ether_addr,(char *)m_sHeader.enet_srcaddr.S_un.s_ether_addr,6)!=0)) ||
+		memcmp((char *)pFrame->enet_dstaddr.S_un.s_ether_addr,(char *)broadcast,6) == 0)
 	{
 		if(ntohs(pFrame->enet_type) == 0x1234){
 			bSuccess = mp_aUpperLayer[0]->Receive((unsigned char*) pFrame->enet_data);
+		} else if(ntohs(pFrame->enet_type) == 0x7777) {
+			bSuccess = mp_aUpperLayer[1]->Receive((unsigned char*)pFrame->enet_data);
 		}
 	}
 	return bSuccess ;

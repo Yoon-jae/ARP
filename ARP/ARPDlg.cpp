@@ -301,7 +301,8 @@ void CARPDlg::OnBnClickedMydevSelect()
 
 	// 설정된 IP, MAC(16진수로 변환하여) 주소를 ARP Header에 설정.
 	m_IP->SetSrcIPAddress(mydev_ip);
-	m_ARP->SetEnetDstAddress(MacAddrToHexInt(mEdit_MyEther));
+	m_ARP->SetEnetSrcAddress(MacAddrToHexInt(mEdit_MyEther));
+	m_ARP->SetSrcIPAddress(mydev_ip);
 	m_Ether->SetEnetSrcAddress(MacAddrToHexInt(mEdit_MyEther));
 
 
