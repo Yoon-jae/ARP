@@ -48,9 +48,11 @@ public:
 		IP_ADDR arp_dstIPAddress;
 	} ARPLayer_HEADER, *PARPLayer_HEADER;
 
+	// MAC, IP, timer, complete/incomplete
+	vector<tuple<unsigned char*, unsigned char*, int, BOOL> > arp_table;
+
 protected:
 	ARPLayer_HEADER m_sHeader;
-	// ARP Header, IP Header, timer, complete/incomplete
-	vector<tuple<unsigned char*, unsigned char*, int, BOOL> > arp_table;
+	
 	pair<unsigned char*, int> tempPayload;
 };

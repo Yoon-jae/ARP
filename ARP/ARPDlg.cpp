@@ -158,7 +158,8 @@ BOOL CARPDlg::OnInitDialog()
 	// Arp Cache Table
 	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(0,"IP Address",LVCFMT_LEFT,180);
 	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(1,"Ethernet Address",LVCFMT_LEFT,180);
-	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(2,"Status",LVCFMT_LEFT,130);
+	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(2,"Timer",LVCFMT_LEFT,50);
+	((CListCtrl*)GetDlgItem(IDC_ARP_CACHE_TABLE))->InsertColumn(3,"Status",LVCFMT_LEFT,130);
 
 	// Proxy Cache Table
 	((CListCtrl*)GetDlgItem(IDC_PARP_ENTRY))->InsertColumn(0,"Device",LVCFMT_LEFT,180);
@@ -393,5 +394,46 @@ void CARPDlg::OnTimer(UINT nIDEvent)
 
 void CARPDlg::CacheTableUpdate()
 {
+	mList_ARPCacheTable.DeleteAllItems();
 
+	int length = m_ARP->arp_table.size();
+	for(int i=0; i<length; i++)
+	{
+		LV_ITEM lvItem;
+		lvItem.iItem = mList_ARPCacheTable.GetItemCount();
+		lvItem.mask = LVIF_TEXT;
+		lvItem.iSubItem = 0;
+
+		int time = get<2>(m_ARP->arp_table[i]);
+		if(time > 0) {
+
+			unsigned char* currentIP = get<1>(m_ARP->arp_table[i]);
+			CString ip;
+			ip.Format("%d.%d.%d.%d", currentIP,currentIP+1,currentIP+2,currentIP+3);
+			mList_ARPCacheTable.SetItemText(lvItem.iItem, 0, (LPSTR)(LPCTSTR)ip);
+
+
+			unsigned char* currentMAC = get<0>(m_ARP->arp_table[i]);
+			CString mac;
+			mac.Format("%d:%d:%d:%d:%d:%d",currentMAC,currentMAC+1,currentMAC+2
+										,currentMAC+3,currentMAC+4,currentMAC+5);
+			mList_ARPCacheTable.SetItemText(lvItem.iItem, 1, (LPSTR)(LPCTSTR)mac);
+
+
+			CString timer;
+			timer.Format("%d",time);
+			mList_ARPCacheTable.SetItemText(lvItem.iItem, 2, (LPSTR)(LPCTSTR)timer);
+
+			CString status; 
+			status.Format("%s",get<3>(m_ARP->arp_table[i])? "complete":"incomplete");
+			mList_ARPCacheTable.SetItemText(lvItem.iItem, 3, (LPSTR)(LPCTSTR)status);
+
+		} else {
+			m_ARP->arp_table.erase(m_ARP->arp_table.begin() + i);
+			continue;
+		}
+
+		// 1초 줄이기
+		get<2>(m_ARP->arp_table[i]) -= 1;
+	}
 }
