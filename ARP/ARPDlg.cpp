@@ -384,12 +384,20 @@ void CARPDlg::OnCbnSelchangeMydevList()
 	// Adapter 이름으로 Mac Address를 가져옴
 	mEdit_MyEther = m_NI->GetNICardAddress((char *)nicName.GetString());
 
+	// 1초마다 timer 실행
+	SetTimer(1354, 1000, NULL);
+
 	UpdateData ( FALSE );
 }
 
 void CARPDlg::OnTimer(UINT nIDEvent)
 {
-
+    switch(nIDEvent)
+    {
+        case 1354:
+			CacheTableUpdate();
+            break;
+    }
 }
 
 void CARPDlg::CacheTableUpdate()
