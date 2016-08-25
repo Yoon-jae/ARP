@@ -40,6 +40,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -383,4 +384,14 @@ void CARPDlg::OnCbnSelchangeMydevList()
 	mEdit_MyEther = m_NI->GetNICardAddress((char *)nicName.GetString());
 
 	UpdateData ( FALSE );
+}
+
+void CARPDlg::OnTimer(UINT nIDEvent)
+{
+
+}
+
+void CARPDlg::CacheTableUpdate()
+{
+
 }

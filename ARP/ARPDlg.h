@@ -59,6 +59,8 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	
+	afx_msg void OnTimer(UINT nIDEvent);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -88,6 +90,9 @@ public:
 	afx_msg void OnBnClickedMydevSelect();
 	afx_msg void OnBnClickedArpRequest();
 	afx_msg void OnCbnSelchangeMydevList();
+
+	void			CacheTableUpdate();
+
 };
 
 #endif // !defined(AFX_ARPDLG_H__FE9C37CB_4C90_4772_99AD_50A9B24BCE62__INCLUDED_)
